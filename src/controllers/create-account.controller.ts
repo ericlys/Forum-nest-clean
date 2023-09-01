@@ -19,7 +19,7 @@ const createdAccountBodySchema = z.object({
 
 type CreatedAccountBodySchema = z.infer<typeof createdAccountBodySchema>
 
-@Controller('/account')
+@Controller('/accounts')
 export class CreateAccountController {
   constructor(private prisma: PrismaService) {}
 
