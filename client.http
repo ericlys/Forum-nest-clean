@@ -12,3 +12,11 @@ Content-Type: application/json
 
 ###
 
+# @name authenticate
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+
+{
+  "email": "ericlys@email.com",
+  "password": "123456"
+}
