@@ -3,7 +3,6 @@ import { FakeHasher } from 'test/cryptography/fake-hasher'
 import { AuthenticateStudentUseCase } from './authenticate-student'
 import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
 import { makeStudent } from 'test/factories/make-student'
-import { string } from 'zod'
 
 let inMemoryStudentsRepository: InMemoryStudentsRepository
 let fakeEncrypter: FakeEncrypter
@@ -39,7 +38,7 @@ describe('Authenticate Student', () => {
 
     expect(result.isRight()).toBe(true)
     expect(result.value).toEqual({
-      access_token: expect.any(String),
+      accessToken: expect.any(String),
     })
   })
 })
