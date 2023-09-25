@@ -3,7 +3,7 @@ import { AnswersRepository } from '@/domain/forum/application/repositories/answe
 import { Answer } from '@/domain/forum/enterprise/entities/answer'
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
-import { PrismaAnswerMapper } from '../mappers/prisma-asnwer-mapper'
+import { PrismaAnswerMapper } from '../mappers/prisma-answer-mapper'
 
 @Injectable()
 export class PrismaAnswersRepository implements AnswersRepository {
