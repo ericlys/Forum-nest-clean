@@ -9,7 +9,7 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { DeleteAnswerCommentUseCase } from '@/domain/forum/application/use-cases/delete-answer-comment'
 
-@Controller('/questions/comments/:id')
+@Controller('/answers/comments/:id')
 export class DeleteAnswerCommentController {
   constructor(private deleteAnswerComment: DeleteAnswerCommentUseCase) {}
 
