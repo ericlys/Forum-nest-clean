@@ -2,9 +2,13 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { CreateQuestionUseCase } from './create-question'
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository'
 import { InMemoryQuestionAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
+import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository'
 
 let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository
-let inMemoryQuestionRepository: InMemoryQuestionsRepository
+let inMemoryQuestionsRepository: InMemoryQuestionsRepository
+let inMemoryAttachmentRepository: InMemoryAttachmentsRepository
+let inMemoryStudentRepository: InMemoryStudentsRepository
 let sut: CreateQuestionUseCase // system under test
 
 describe('Create Question', () => {
@@ -12,10 +16,14 @@ describe('Create Question', () => {
     inMemoryQuestionAttachmentsRepository =
       new InMemoryQuestionAttachmentsRepository()
 
-    inMemoryQuestionRepository = new InMemoryQuestionsRepository(
+    inMemoryAttachmentRepository = new InMemoryAttachmentsRepository()
+    inMemoryStudentRepository = new InMemoryStudentsRepository()
+    inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
       inMemoryQuestionAttachmentsRepository,
+      inMemoryAttachmentRepository,
+      inMemoryStudentRepository,
     )
-    sut = new CreateQuestionUseCase(inMemoryQuestionRepository)
+    sut = new CreateQuestionUseCase(inMemoryQuestionsRepository)
   })
 
   it('should be able to create a question', async () => {
@@ -27,14 +35,14 @@ describe('Create Question', () => {
     })
 
     expect(result.isRight()).toBe(true)
-    expect(inMemoryQuestionRepository.items[0]).toEqual(result.value?.question)
+    expect(inMemoryQuestionsRepository.items[0]).toEqual(result.value?.question)
 
     expect(
-      inMemoryQuestionRepository.items[0].attachments.currentItems,
+      inMemoryQuestionsRepository.items[0].attachments.currentItems,
     ).toHaveLength(2)
 
     expect(
-      inMemoryQuestionRepository.items[0].attachments.currentItems,
+      inMemoryQuestionsRepository.items[0].attachments.currentItems,
     ).toEqual([
       expect.objectContaining({ attachmentId: new UniqueEntityID('1') }),
       expect.objectContaining({ attachmentId: new UniqueEntityID('2') }),

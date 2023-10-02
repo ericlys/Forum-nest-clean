@@ -5,8 +5,12 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { InMemoryQuestionAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository'
 import { makeQuestionAttachment } from 'test/factories/make-question-attachment'
+import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
 
-let inMemoryQuestionRepository: InMemoryQuestionsRepository
+let inMemoryAttachmentRepository: InMemoryAttachmentsRepository
+let inMemoryStudentRepository: InMemoryStudentsRepository
+let inMemoryQuestionsRepository: InMemoryQuestionsRepository
 let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository
 let sut: DeleteQuestionUseCase
 
@@ -15,11 +19,15 @@ describe('Delete Question', () => {
     inMemoryQuestionAttachmentsRepository =
       new InMemoryQuestionAttachmentsRepository()
 
-    inMemoryQuestionRepository = new InMemoryQuestionsRepository(
+    inMemoryAttachmentRepository = new InMemoryAttachmentsRepository()
+    inMemoryStudentRepository = new InMemoryStudentsRepository()
+    inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
       inMemoryQuestionAttachmentsRepository,
+      inMemoryAttachmentRepository,
+      inMemoryStudentRepository,
     )
 
-    sut = new DeleteQuestionUseCase(inMemoryQuestionRepository)
+    sut = new DeleteQuestionUseCase(inMemoryQuestionsRepository)
   })
 
   it('should be able to delete a question', async () => {
@@ -29,7 +37,7 @@ describe('Delete Question', () => {
       },
       new UniqueEntityID('question-1'),
     )
-    await inMemoryQuestionRepository.create(newQuestion)
+    await inMemoryQuestionsRepository.create(newQuestion)
 
     // add attachments
     inMemoryQuestionAttachmentsRepository.items.push(
@@ -48,7 +56,7 @@ describe('Delete Question', () => {
       authorId: 'author-1',
     })
 
-    expect(inMemoryQuestionRepository.items).toHaveLength(0)
+    expect(inMemoryQuestionsRepository.items).toHaveLength(0)
     expect(inMemoryQuestionAttachmentsRepository.items).toHaveLength(0)
   })
 
@@ -59,7 +67,7 @@ describe('Delete Question', () => {
       },
       new UniqueEntityID('question-1'),
     )
-    await inMemoryQuestionRepository.create(newQuestion)
+    await inMemoryQuestionsRepository.create(newQuestion)
 
     const result = await sut.execute({
       questionId: 'question-1',

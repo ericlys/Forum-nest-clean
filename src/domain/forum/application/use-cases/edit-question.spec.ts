@@ -5,8 +5,12 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { InMemoryQuestionAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository'
 import { makeQuestionAttachment } from 'test/factories/make-question-attachment'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
+import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository'
 
-let inMemoryQuestionRepository: InMemoryQuestionsRepository
+let inMemoryQuestionsRepository: InMemoryQuestionsRepository
+let inMemoryAttachmentRepository: InMemoryAttachmentsRepository
+let inMemoryStudentRepository: InMemoryStudentsRepository
 let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository
 let sut: EditQuestionUseCase
 
@@ -15,12 +19,16 @@ describe('Edit Question', () => {
     inMemoryQuestionAttachmentsRepository =
       new InMemoryQuestionAttachmentsRepository()
 
-    inMemoryQuestionRepository = new InMemoryQuestionsRepository(
+    inMemoryAttachmentRepository = new InMemoryAttachmentsRepository()
+    inMemoryStudentRepository = new InMemoryStudentsRepository()
+    inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
       inMemoryQuestionAttachmentsRepository,
+      inMemoryAttachmentRepository,
+      inMemoryStudentRepository,
     )
 
     sut = new EditQuestionUseCase(
-      inMemoryQuestionRepository,
+      inMemoryQuestionsRepository,
       inMemoryQuestionAttachmentsRepository,
     )
   })
@@ -33,7 +41,7 @@ describe('Edit Question', () => {
       new UniqueEntityID('question-1'),
     )
 
-    await inMemoryQuestionRepository.create(newQuestion)
+    await inMemoryQuestionsRepository.create(newQuestion)
 
     inMemoryQuestionAttachmentsRepository.items.push(
       makeQuestionAttachment({
@@ -54,17 +62,17 @@ describe('Edit Question', () => {
       attachmentsIds: ['1', '3'],
     })
 
-    expect(inMemoryQuestionRepository.items[0]).toMatchObject({
+    expect(inMemoryQuestionsRepository.items[0]).toMatchObject({
       title: 'Pergunta teste',
       content: 'Conteúdo teste',
     })
 
     expect(
-      inMemoryQuestionRepository.items[0].attachments.currentItems,
+      inMemoryQuestionsRepository.items[0].attachments.currentItems,
     ).toHaveLength(2)
 
     expect(
-      inMemoryQuestionRepository.items[0].attachments.currentItems,
+      inMemoryQuestionsRepository.items[0].attachments.currentItems,
     ).toEqual([
       expect.objectContaining({ attachmentId: new UniqueEntityID('1') }),
       expect.objectContaining({ attachmentId: new UniqueEntityID('3') }),
@@ -78,7 +86,7 @@ describe('Edit Question', () => {
       },
       new UniqueEntityID('question-1'),
     )
-    await inMemoryQuestionRepository.create(newQuestion)
+    await inMemoryQuestionsRepository.create(newQuestion)
 
     const result = await sut.execute({
       questionId: newQuestion.id.toValue(),
@@ -100,7 +108,7 @@ describe('Edit Question', () => {
       new UniqueEntityID('question-1'),
     )
 
-    await inMemoryQuestionRepository.create(newQuestion)
+    await inMemoryQuestionsRepository.create(newQuestion)
 
     inMemoryQuestionAttachmentsRepository.items.push(
       makeQuestionAttachment({
