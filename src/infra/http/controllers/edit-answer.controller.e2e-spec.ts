@@ -1,4 +1,3 @@
-import { AnswerAttachment } from '@/domain/forum/enterprise/entities/answer-attachment'
 import { AppModule } from '@/infra/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
