@@ -10,6 +10,8 @@ export class DomainEvents {
   // marca quais agregados tem eventos pendentes, aqui marcamos quais agregados tem eventos mas ainda não estão prontos
   private static markedAggregates: AggregateRoot<unknown>[] = []
 
+  public static shouldRun = true
+
   // add o agregado dentro do array markedAggregates
   public static markAggregateForDispatch(aggregate: AggregateRoot<unknown>) {
     const aggregateFound = !!this.findMarkedAggregateByID(aggregate.id)
@@ -73,6 +75,10 @@ export class DomainEvents {
     const eventClassName: string = event.constructor.name
 
     const isEventRegistered = eventClassName in this.handlersMap
+
+    if (!this.shouldRun) {
+      return
+    }
 
     if (isEventRegistered) {
       const handlers = this.handlersMap[eventClassName]
