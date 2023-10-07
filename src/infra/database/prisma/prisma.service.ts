@@ -16,7 +16,7 @@ export class PrismaService
     return this.$connect()
   }
 
-  // if app crashar, error, etc..
+  // if app crashed, error, etc..
   onModuleDestroy() {
     return this.$disconnect()
   }
